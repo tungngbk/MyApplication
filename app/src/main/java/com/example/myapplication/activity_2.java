@@ -53,8 +53,8 @@ public class activity_2 extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, flowunit);
 
         // mengeset Array Adapter tersebut ke Spinner
-        spflowunit.setAdapter(adapter);
-        save_flow = (Button) findViewById(R.id.save_flow);
+//        spflowunit.setAdapter(adapter);
+//        save_flow = (Button) findViewById(R.id.save_flow);
 
         save_flow.setOnClickListener(new View.OnClickListener() {
             @Override
