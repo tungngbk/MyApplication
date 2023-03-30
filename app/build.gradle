@@ -42,4 +42,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    //implementation 'org.apache.directory.studio:org.apache.commons.io:2.4'
 }

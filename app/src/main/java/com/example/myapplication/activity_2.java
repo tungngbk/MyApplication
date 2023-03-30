@@ -9,6 +9,8 @@ package com.example.myapplication;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -19,15 +21,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import androidx.appcompat.app.AppCompatActivity;
+//import org.apache.commons.io.IOUtils;
 
 
 
 import static com.example.myapplication.activity_1.ip_address;
+
+import java.io.InputStream;
 
 
 public class activity_2 extends AppCompatActivity {
@@ -39,9 +46,11 @@ public class activity_2 extends AppCompatActivity {
     };
 
     TextView txvalue;
+
+    ImageView imageView;
     Handler handler = new Handler();
     boolean statusdevice = true;
-
+    //private StringBuilder image=new StringBuilder();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +62,8 @@ public class activity_2 extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, flowunit);
 
         // mengeset Array Adapter tersebut ke Spinner
-//        spflowunit.setAdapter(adapter);
-//        save_flow = (Button) findViewById(R.id.save_flow);
+        spflowunit.setAdapter(adapter);
+        save_flow = (Button) findViewById(R.id.save_flow);
 
         save_flow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,10 +85,11 @@ public class activity_2 extends AppCompatActivity {
         valve2off = (Button) findViewById(R.id.valve2_off);
         valve3on = (Button) findViewById(R.id.valve3_on);
         valve3off = (Button) findViewById(R.id.valve3_off);
+        imageView = (ImageView) findViewById(R.id.imageView);
 
         txvalue = (TextView ) findViewById(R.id.tx_value);
 
-        handler.postDelayed(status_data,0);
+        //handler.postDelayed(status_data,0);
 
         valve1on.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,19 +134,6 @@ public class activity_2 extends AppCompatActivity {
         });
     }
 
-    private Runnable status_data = new Runnable() {
-        @Override
-        public void run() {
-            if (statusdevice) {
-                request_to_url("");
-                handler.postDelayed(this, 2000);
-                Log.d("Status", "Connectivity_esp32");
-            }else {
-                handler.removeCallbacks(status_data);
-                Log.d("Status","Finalizado");
-            }
-        }
-    };
 
     @Override
     protected void onDestroy() {
@@ -150,31 +147,30 @@ public class activity_2 extends AppCompatActivity {
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         if(networkInfo != null && networkInfo.isConnected()) {
-
             new request_data().execute("http://" + ip_address + "/" + command);
-
         }else {
             Toast.makeText(activity_2.this, "Not connected  ", Toast.LENGTH_LONG).show();
 
         }
     }
 
-    private class request_data extends AsyncTask<String, Void, String> {
+
+
+    private class request_data extends AsyncTask<String, Void, byte[]> {
 
         @Override
-        protected String doInBackground(String... url) {
-
+        protected byte[] doInBackground(String... url) {
             return Connectivity.geturl(url[0]);
-
         }
 
+
         @Override
-        protected void onPostExecute(String result_data) {
+        protected void onPostExecute(byte[] result_data) {
             if(result_data !=null) {
-                txvalue.setText(result_data);
-
+                Log.d("chieu dai mang", String.valueOf(result_data.length));
+                Bitmap bmp = BitmapFactory.decodeByteArray(result_data, 0, result_data.length);
+                imageView.setImageBitmap(bmp);
             }else{
-
                 Toast.makeText(activity_2.this, "Null data", Toast.LENGTH_LONG).show();
             }
         }
