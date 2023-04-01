@@ -33,7 +33,7 @@ public class activity_1 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ip_address = ip.getText().toString();
-                Intent intent = new Intent(activity_1.this, activity_2.class);
+                Intent intent = new Intent(activity_1.this, ControlActivity.class);
                 startActivity(intent);
 
 
