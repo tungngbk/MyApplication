@@ -8,6 +8,7 @@ package com.example.myapplication;
 //gmail : nurahmaddw@gmail.com
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +32,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import static com.example.myapplication.activity_1.ip_address;
+
+import org.json.JSONException;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 public class ControlActivity extends AppCompatActivity implements View.OnClickListener {
@@ -85,22 +93,17 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.takePhoto:
-                request_to_url("take_photo");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/capture");
                 break;
             case R.id.upBtn:
-                request_to_url(UP);
                 break;
             case R.id.downBtn:
-                request_to_url(DOWN);
                 break;
             case R.id.leftBtn:
-                request_to_url(LEFT);
                 break;
             case R.id.rightBtn:
-                request_to_url(RIGHT);
                 break;
             case R.id.stopBtn:
-                request_to_url(STOP);
                 break;
         }
     }
@@ -110,38 +113,59 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         super.onDestroy();
     }
 
-    public void request_to_url (String command) {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-        if(networkInfo != null && networkInfo.isConnected()) {
-            new request_data().execute("http://" + ip_address + "/" + command);
-        }else {
-            Toast.makeText(ControlActivity.this, "Not connected  ", Toast.LENGTH_LONG).show();
 
-        }
-    }
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
 
-    private class request_data extends AsyncTask<String, Void, byte[]> {
-
-        @Override
-        protected byte[] doInBackground(String... url) {
-            return Connectivity.geturl(url[0]);
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
         }
 
+        protected Bitmap doInBackground(String... urls) {
+//            String urldisplay = urls[0];
+//            Bitmap mIcon11 = null;
+//            Bitmap bitmap = null;
+//            try {
+//                InputStream in = new java.net.URL(urldisplay).openStream();
+//                mIcon11 = BitmapFactory.decodeStream(in);
+//
+//                BitmapFactory.Options options = new BitmapFactory.Options();
+//                options.inSampleSize = 4;
+//                options.inPurgeable = true;
+//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                mIcon11.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+//                byte[] byteImage_photo = baos.toByteArray();
+//                String encodedImage = Base64.encodeToString(byteImage_photo, Base64.DEFAULT);
+//                String resultImage = Connectivity.postimage("http://127.0.0.1:8000/test", encodedImage);
+//                byte[] bytes = Base64.decode(resultImage, Base64.DEFAULT);
+//                bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//
+//            } catch (Exception e) {
+//                Log.e("Error", e.getMessage());
+//                e.printStackTrace();
+//            }
+//            return bitmap;\
 
-        @Override
-        protected void onPostExecute(byte[] result_data) {
-            if(result_data != null) {
-                Log.d("chieu dai mang", String.valueOf(result_data.length));
-                Bitmap bmp = BitmapFactory.decodeByteArray(result_data, 0, result_data.length);
-                imageView.setImageBitmap(bmp);
-            }else{
-                Toast.makeText(ControlActivity.this, "Null data", Toast.LENGTH_LONG).show();
+            String resultImage;
+            try {
+                resultImage = Connectivity.postimage("http://127.0.0.1:8000/test", "\"image\": \"alsdjk\"");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
             }
+            System.out.println(resultImage);
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
         }
     }
+
+
+
 
 
 }
