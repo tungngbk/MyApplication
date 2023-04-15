@@ -149,7 +149,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
 
             String resultImage;
             try {
-                resultImage = Connectivity.postimage("http://127.0.0.1:8000/test", "\"image\": \"alsdjk\"");
+                resultImage = Connectivity.postimage("http://192.168.0.103:8000/test", "\"image\": \"alsdjk\"");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (JSONException e) {

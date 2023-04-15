@@ -34,7 +34,7 @@ public class Connectivity {
 
         RequestBody formBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("name", base64string)
+                .addFormDataPart("image", base64string)
                 .build();
 
         Request request = new Request.Builder()
