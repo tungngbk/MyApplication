@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.ImageName;
 
-public class ImageListActivity extends AppCompatActivity {
+public class ImageListActivity extends AppCompatActivity implements SelectListener {
     private ArrayList<ImageName> mHeros ;
     private RecyclerView mRecyclerHero;
     private ImageNameAdapter mHeroAdapter ;
@@ -23,6 +25,12 @@ public class ImageListActivity extends AppCompatActivity {
         mRecyclerHero = findViewById(R.id.recyclerHero);
         new DownloadImageNameTask().execute();
     }
+
+    @Override
+    public void onItemClicked(ImageName imageName) {
+        Toast.makeText(this, imageName.getName(), Toast.LENGTH_SHORT).show();
+    }
+
     private class DownloadImageNameTask extends AsyncTask<Void, Void, List<ImageName>> {
 
         protected List<ImageName> doInBackground(Void... voids) {
@@ -41,7 +49,7 @@ public class ImageListActivity extends AppCompatActivity {
         }
         protected void onPostExecute(List<ImageName> result) {
             mHeros= (ArrayList<ImageName>) result;
-            mHeroAdapter = new ImageNameAdapter(ImageListActivity.this,mHeros);
+            mHeroAdapter = new ImageNameAdapter(ImageListActivity.this, mHeros, ImageListActivity.this);
             mRecyclerHero.setAdapter(mHeroAdapter);
             mRecyclerHero.setLayoutManager(new LinearLayoutManager(ImageListActivity.this));
         }
