@@ -27,6 +27,7 @@ public class ImageListActivity extends AppCompatActivity {
 
         protected List<ImageName> doInBackground(Void... voids) {
 
+            //List<ImageName> resultImage = new ArrayList<>();
             List<ImageName> resultImage = null;
             try {
                 resultImage=Connectivity.getImageNames();
@@ -35,6 +36,7 @@ public class ImageListActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
+            //resultImage.add(new ImageName("dhdhdh"));
             return resultImage;
         }
         protected void onPostExecute(List<ImageName> result) {
