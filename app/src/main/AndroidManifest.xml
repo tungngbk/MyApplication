@@ -34,6 +34,13 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ImageListActivity"
+            android:exported="true">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".ControlActivity"
             android:screenOrientation="landscape" />
         <activity

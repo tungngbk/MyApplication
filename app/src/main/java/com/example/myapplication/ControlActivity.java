@@ -33,11 +33,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import static com.example.myapplication.activity_1.ip_address;
 
+
 import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
+import model.ImageName;
 
 
 public class ControlActivity extends AppCompatActivity implements View.OnClickListener {
@@ -123,40 +131,44 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         protected Bitmap doInBackground(String... urls) {
-//            String urldisplay = urls[0];
-//            Bitmap mIcon11 = null;
-//            Bitmap bitmap = null;
-//            try {
-//                InputStream in = new java.net.URL(urldisplay).openStream();
-//                mIcon11 = BitmapFactory.decodeStream(in);
-//
-//                BitmapFactory.Options options = new BitmapFactory.Options();
-//                options.inSampleSize = 4;
-//                options.inPurgeable = true;
-//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                mIcon11.compress(Bitmap.CompressFormat.JPEG, 40, baos);
-//                byte[] byteImage_photo = baos.toByteArray();
-//                String encodedImage = Base64.encodeToString(byteImage_photo, Base64.DEFAULT);
-//                String resultImage = Connectivity.postimage("http://127.0.0.1:8000/test", encodedImage);
-//                byte[] bytes = Base64.decode(resultImage, Base64.DEFAULT);
-//                bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//
-//            } catch (Exception e) {
-//                Log.e("Error", e.getMessage());
-//                e.printStackTrace();
-//            }
-//            return bitmap;\
-
-            String resultImage;
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            Bitmap bitmap = null;
             try {
-                resultImage = Connectivity.postimage("http://192.168.0.103:8000/test", "\"image\": \"alsdjk\"");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 4;
+                options.inPurgeable = true;
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                mIcon11.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+                byte[] byteImage_photo = baos.toByteArray();
+
+                String encodedImage = Base64.encodeToString(byteImage_photo, Base64.DEFAULT);
+                String newencodedImage = encodedImage.replace("\n","");
+                String resultImage = Connectivity.postimage(
+                        "https://fault-anomaly-detection-api-k6hgw7qjeq-ue.a.run.app/predict", newencodedImage);
+                //String resultImage = Connectivity.postimage("http://192.168.1.12:8000/test", newencodedImage);
+                byte[] bytes = Base64.decode(resultImage, Base64.DEFAULT);
+                bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
             }
-            System.out.println(resultImage);
-            return null;
+            return bitmap;
+
+            //String resultImage;
+
+                //resultImage = Connectivity.postimage("http://192.168.1.12:8000/test", "\"image\": \"alsdjk\"");
+                //resultImage=Connectivity.getImageNames();
+                //resultImage=Connectivity.geturl("https://fault-anomaly-detection-api-k6hgw7qjeq-ue.a.run.app/haha");
+            //System.out.println(resultImage);
+//            for (ImageName image:
+//                 resultImage) {
+   //           System.out.println(image.getName());
+//            }
+            //return null;
         }
 
         protected void onPostExecute(Bitmap result) {

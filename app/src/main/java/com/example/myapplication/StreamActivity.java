@@ -27,7 +27,7 @@ public class StreamActivity extends AppCompatActivity {
     WebView webView;
 
     // Insert your Video URL
-    String VideoURL = "http://192.168.1.3:81/stream";
+    String VideoURL = "http://192.168.1.184:81/stream";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
