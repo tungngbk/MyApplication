@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.ImageName;
+import model.record;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -115,6 +116,55 @@ public class Connectivity {
             nameList.add(new ImageName(another_json_object.getString("_id")));
         }
         return nameList;
+    }
+
+    public static List<record> getIdAndType (){
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType,
+                "{\n" +
+                        "    \"collection\":\"fault_detection\",\n" +
+                        "    \"database\":\"thesis\",\n" +
+                        "    \"dataSource\":\"Cluster0\",\n" +
+                        "    \"projection\": {\n" +
+                        "      \"_id\": 1,\n" +
+                        "      \"type\": 1\n" +
+                        "    }\n" +
+                        "}");
+
+        Request request = new Request.Builder()
+                .url("https://ap-southeast-1.aws.data.mongodb-api.com/app/data-wlatu/endpoint/data/v1/action/find")
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Access-Control-Request-Headers", "*")
+                .addHeader("api-key", "LFyT8MWcEraGxtCsMJpceBO8q72WLX8mInon25j6kbVCgv2j5vSwVYzNVzdxFsqh")
+                .build();
+        Response response=null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            String responsebody =response.body().string();
+            JSONObject myjson = new JSONObject(responsebody);
+            JSONArray the_json_array = myjson.getJSONArray("documents");
+            int size = the_json_array.length();
+            ArrayList<record> nameList = new ArrayList<record>();
+            for (int i = 0; i < size; i++) {
+                JSONObject another_json_object = the_json_array.getJSONObject(i);
+                nameList.add(new record(another_json_object.getString("_id"),"",
+                        0f,"",another_json_object.getString("type"),""));
+            }
+            return nameList;
+        } catch (IOException e) {
+            System.out.println("loi io");
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            System.out.println("loi json");
+            throw new RuntimeException(e);
+        } finally {
+            if(response!=null) {
+                response.close();
+            }
+        }
     }
 
 }
