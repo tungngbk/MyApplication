@@ -4,27 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/wave"
     tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/imageListHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Image List"
+        android:textColor="#00cba9"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.25" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHero"
-        android:layout_width="413dp"
-        android:layout_height="668dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <EditText
-        android:id="@+id/editTextTextPersonName"
-        android:layout_width="250dp"
-        android:layout_height="45dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Danh sách ảnh đã chụp"
-        tools:layout_editor_absoluteX="74dp"
-        tools:layout_editor_absoluteY="5dp" />
+        app:layout_constraintTop_toBottomOf="@+id/imageListHeader" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
