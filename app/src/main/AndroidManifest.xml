@@ -52,7 +52,8 @@
         </activity>
         <activity
             android:name=".ControlActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait"
+            android:exported="true"/>
         <activity
             android:name=".activity_1"
             android:exported="true"

@@ -9,6 +9,7 @@ package com.example.myapplication;
 
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,9 +22,11 @@ import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -63,12 +66,24 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     protected static String STOP = "stop";
 
     ImageView imageView;
+    WebView webView;
+
+    // Insert your Video URL
+    String VideoURL = "http://192.168.1.184:81/stream";
+
     Handler handler = new Handler();
     //private StringBuilder image=new StringBuilder();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.control_activity);
+
+        webView = (WebView) findViewById(R.id.webview);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+        String newUA= "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0";
+        webView.getSettings().setUserAgentString(newUA);
+        webView.loadUrl(VideoURL);
 
         takePhoto = (Button) findViewById(R.id.takePhoto);
         takePhoto.setOnClickListener(this);
