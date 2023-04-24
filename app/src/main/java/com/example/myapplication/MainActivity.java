@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         createProjectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ControlActivity.class);
+                Intent intent = new Intent(MainActivity.this, CreateProjectActivity.class);
                 startActivity(intent);
             }
         });

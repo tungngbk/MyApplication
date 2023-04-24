@@ -3,12 +3,18 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -24,25 +30,31 @@ public class CreateProjectActivity extends AppCompatActivity {
     private EditText inputDescription;
     private EditText inputDate;
     private Button btnCreate;
+    final Calendar mCalendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_project);
 
+
         OkHttpClient client = new OkHttpClient();
-        String url = "http://192.168.0.103:8000/test";
+        String url = "your url";
 
         inputName = (EditText) findViewById(R.id.inputName);
         inputDescription = (EditText) findViewById(R.id.inputDescription);
         inputDate = (EditText) findViewById(R.id.inputDate);
+
+        selectDate();
         btnCreate = (Button) findViewById(R.id.btnCreate);
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RequestBody formBody = new MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
-                        .addFormDataPart("image", "zyx")
+                        .addFormDataPart("name", inputName.getText().toString())
+                        .addFormDataPart("description", inputDescription.getText().toString())
+                        .addFormDataPart("date", inputDate.getText().toString())
                         .build();
 
                 Request request = new Request.Builder()
@@ -65,5 +77,31 @@ public class CreateProjectActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void selectDate() {
+        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                mCalendar.set(Calendar.YEAR, year);
+                mCalendar.set(Calendar.MONTH, month);
+                mCalendar.set(Calendar.DAY_OF_MONTH, day);
+
+                inputDate.setText(updateDate());
+            }
+        };
+
+        inputDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DatePickerDialog(CreateProjectActivity.this, date, mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+    }
+
+    private String updateDate() {
+        String format = "yyyy-MM-dd";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        return dateFormat.format(mCalendar.getTime());
     }
 }
