@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,30 +14,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import model.ImageName;
+import model.Project;
 
-public class ImageNameAdapter extends
-        RecyclerView.Adapter<ImageNameAdapter.ViewHolder> {
+public class ProjectListAdapter extends
+        RecyclerView.Adapter<ProjectListAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        //private ImageView mImageHero;
         private TextView mTextName;
         public CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            //mImageHero = itemView.findViewById(R.id.image_hero);
             mTextName = itemView.findViewById(R.id.text_name);
             cardView = itemView.findViewById(R.id.imageCardView);
         }
     }
     private Context mContext;
-    private ArrayList<ImageName> mImagenames;
-    private SelectListener listener;
+    private ArrayList<Project> mProject;
+    private SelectListenerProject listener;
 
-    public ImageNameAdapter(Context mContext, ArrayList<ImageName> mImagenames, SelectListener listener) {
+    public ProjectListAdapter(Context mContext, ArrayList<Project> mProject, SelectListenerProject listener) {
         this.mContext = mContext;
-        this.mImagenames = mImagenames;
+        this.mProject = mProject;
         this.listener = listener;
     }
     @NonNull
@@ -52,19 +49,19 @@ public class ImageNameAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ImageName hero = mImagenames.get(position);
-        holder.mTextName.setText(hero.getName());
+        Project project = mProject.get(position);
+        holder.mTextName.setText(project.getName());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onItemClicked(mImagenames.get(position));
+                listener.onItemClicked(mProject.get(position));
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mImagenames.size();
+        return mProject.size();
     }
 
 }

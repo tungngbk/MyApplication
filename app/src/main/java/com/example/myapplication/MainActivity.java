@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
         openProjectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(MainActivity.this, ProjectListActivity.class);
+                startActivity(intent);
             }
         });
 

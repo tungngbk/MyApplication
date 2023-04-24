@@ -38,7 +38,7 @@ public class ImageListActivity extends AppCompatActivity implements SelectListen
             //List<ImageName> resultImage = new ArrayList<>();
             List<ImageName> resultImage = null;
             try {
-                resultImage=Connectivity.getImageNames();
+                resultImage = Connectivity.getImageNames();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (JSONException e) {

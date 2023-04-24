@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.ImageName;
+import model.Project;
 import model.record;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -116,6 +117,47 @@ public class Connectivity {
             nameList.add(new ImageName(another_json_object.getString("_id")));
         }
         return nameList;
+    }
+
+    public static List<Project> getProjects () throws IOException, JSONException {
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType,
+                "{\n" +
+                        "    \"collection\":\"fault_detection\",\n" +
+                        "    \"database\":\"thesis\",\n" +
+                        "    \"dataSource\":\"Cluster0\",    \n" +
+                        "    \"projection\": {\n" +
+                        "      \"_id\": 1\n" +
+                        "    }\n" +
+                        "  \n" +
+                        "}");
+
+        Request request = new Request.Builder()
+                .url("https://ap-southeast-1.aws.data.mongodb-api.com/app/data-wlatu/endpoint/data/v1/action/find")
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Access-Control-Request-Headers", "*")
+                .addHeader("api-key", "LFyT8MWcEraGxtCsMJpceBO8q72WLX8mInon25j6kbVCgv2j5vSwVYzNVzdxFsqh")
+                .build();
+        Response response = client.newCall(request).execute();
+        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+        String responsebody =response.body().string();
+        //JSONObject jObject = new JSONObject(responsebody);
+        JSONObject myjson = new JSONObject(responsebody);
+        JSONArray the_json_array = myjson.getJSONArray("documents");
+        int size = the_json_array.length();
+        //ArrayList<JSONObject> arrays = new ArrayList<JSONObject>();
+        ArrayList<Project> projectList = new ArrayList<Project>();
+        for (int i = 0; i < size; i++) {
+            JSONObject another_json_object = the_json_array.getJSONObject(i);
+            //arrays.add(another_json_object);
+//            nameList.add(new ImageName(another_json_object.getString("_id")));
+            projectList.add(new Project("test", "test", "test"));
+
+        }
+        return projectList;
     }
 
     public static List<record> getIdAndType (){
