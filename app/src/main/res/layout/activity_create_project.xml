@@ -86,6 +86,7 @@
         android:layout_marginTop="24dp"
         android:background="@drawable/custom_button"
         android:text="Create"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/inputDate"
         app:layout_constraintStart_toStartOf="@+id/inputDate"
         app:layout_constraintTop_toBottomOf="@+id/inputDate" />

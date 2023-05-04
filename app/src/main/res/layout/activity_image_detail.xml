@@ -8,23 +8,29 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="331dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="TextView"
+        android:text="Project Name"
+        android:textColor="#00cba9"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="327dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="72dp"
-        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Date"
+        android:textColor="#00cba9"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <ImageView
         android:id="@+id/imageView3"
@@ -38,34 +44,41 @@
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="395dp"
-        android:layout_height="198dp"
-        android:layout_marginStart="4dp"
+        android:layout_width="383dp"
+        android:layout_height="216dp"
         android:layout_marginTop="104dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <EditText
+    <TextView
         android:id="@+id/editTextTextPersonName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:layout_marginBottom="12dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Predict Image"
+        android:text="Predicted Image"
+        android:textColor="#00cba9"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/imageView4"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
+    <TextView
         android:id="@+id/editTextTextPersonName2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Capture Image"
+        android:text="Captured Image"
+        android:textColor="#00cba9"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/imageView3"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -74,8 +87,13 @@
         android:layout_width="199dp"
         android:layout_height="33dp"
         android:layout_marginStart="12dp"
+        android:layout_marginTop="6dp"
         android:layout_marginBottom="8dp"
         android:text="TextView"
+        android:textColor="#00cba9"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

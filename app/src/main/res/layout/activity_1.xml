@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/wave"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -10,33 +11,47 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome To SmartCar Control Application"
-        android:textSize="24sp"
+        android:text="SmartCar Control Application"
+        android:textColor="#00cba9"
+        android:textSize="30sp"
         android:textStyle="bold"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="39dp"
-        tools:layout_editor_absoluteY="6dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.25"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/button_ip"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="116dp"
-        android:layout_marginEnd="284dp"
+        android:layout_marginTop="24dp"
         android:text="Enter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@drawable/custom_button"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/edit_ip_address"
+        app:layout_constraintStart_toStartOf="@+id/edit_ip_address"
+        app:layout_constraintTop_toBottomOf="@+id/edit_ip_address" />
 
     <EditText
         android:id="@+id/edit_ip_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="60dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/input_bg"
         android:ems="15"
-        android:hint="Ip address"
+        android:hint="Enter IP Address"
         android:inputType="textUri|numberDecimal"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="39dp" />
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
