@@ -4,12 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -54,7 +58,6 @@ public class CreateProjectActivity extends AppCompatActivity {
                         .setType(MultipartBody.FORM)
                         .addFormDataPart("name", inputName.getText().toString())
                         .addFormDataPart("description", inputDescription.getText().toString())
-                        .addFormDataPart("date", inputDate.getText().toString())
                         .build();
 
                 Request request = new Request.Builder()
@@ -72,9 +75,22 @@ public class CreateProjectActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             final String myResponse = response.body().string();
                             System.out.println(myResponse);
+                            try {
+                                JSONObject jObject = new JSONObject(myResponse);
+                                String projectId=jObject.getString("id");
+                                String projectName=jObject.getString("building");
+                                Intent intent = new Intent(CreateProjectActivity.this, ControlActivity.class);
+                                intent.putExtra("projectname",projectName);
+                                intent.putExtra("projectid",projectId);
+                                startActivity(intent);
+                            } catch (JSONException e) {
+                                System.out.println("Loi json tao project");
+                                e.printStackTrace();
+                            }
                         }
                     }
                 });
+
             }
         });
     }

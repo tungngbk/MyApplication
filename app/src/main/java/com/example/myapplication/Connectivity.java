@@ -12,7 +12,6 @@ import model.ImageName;
 import model.Project;
 import model.record;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -35,7 +34,7 @@ public class Connectivity {
 
 
     }
-    public static String postimage (String url,String base64string) {
+    public static String postimage (String url,String base64string, String buildingid) {
 
 //       OkHttpClient client = new OkHttpClient();
 //
@@ -52,7 +51,8 @@ public class Connectivity {
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType,
                 "{\n" +
-                        "    \"image\":\""+base64string+"\"\n" +
+                        "    \"image\":\""+base64string+"\",\n" +
+                        "    \"building\":\""+buildingid+"\""+
                         "}");
 
         Request request = new Request.Builder()
@@ -119,18 +119,19 @@ public class Connectivity {
         return nameList;
     }
 
-    public static List<Project> getProjects () throws IOException, JSONException {
+    public static ArrayList<Project> getProjects () throws IOException, JSONException {
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType,
                 "{\n" +
-                        "    \"collection\":\"fault_detection\",\n" +
+                        "    \"collection\":\"building\",\n" +
                         "    \"database\":\"thesis\",\n" +
-                        "    \"dataSource\":\"Cluster0\",    \n" +
+                        "    \"dataSource\":\"Cluster0\",\n" +
                         "    \"projection\": {\n" +
-                        "      \"_id\": 1\n" +
+                        "      \"id\": 1,\n" +
+                        "      \"building\": 1,\n" +
+                        "      \"description\":1\n" +
                         "    }\n" +
-                        "  \n" +
                         "}");
 
         Request request = new Request.Builder()
@@ -140,24 +141,34 @@ public class Connectivity {
                 .addHeader("Access-Control-Request-Headers", "*")
                 .addHeader("api-key", "LFyT8MWcEraGxtCsMJpceBO8q72WLX8mInon25j6kbVCgv2j5vSwVYzNVzdxFsqh")
                 .build();
-        Response response = client.newCall(request).execute();
-        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-        String responsebody =response.body().string();
-        //JSONObject jObject = new JSONObject(responsebody);
-        JSONObject myjson = new JSONObject(responsebody);
-        JSONArray the_json_array = myjson.getJSONArray("documents");
-        int size = the_json_array.length();
-        //ArrayList<JSONObject> arrays = new ArrayList<JSONObject>();
-        ArrayList<Project> projectList = new ArrayList<Project>();
-        for (int i = 0; i < size; i++) {
-            JSONObject another_json_object = the_json_array.getJSONObject(i);
-            //arrays.add(another_json_object);
-//            nameList.add(new ImageName(another_json_object.getString("_id")));
-            projectList.add(new Project("test", "test", "test"));
-
+        Response response=null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            String responsebody =response.body().string();
+            JSONObject myjson = new JSONObject(responsebody);
+            JSONArray the_json_array = myjson.getJSONArray("documents");
+            int size = the_json_array.length();
+            ArrayList<Project> projects = new ArrayList<Project>();
+            for (int i = 0; i < size; i++) {
+                JSONObject another_json_object = the_json_array.getJSONObject(i);
+                projects.add(new Project(another_json_object.has("id")?another_json_object.getString("id"):""
+                        ,another_json_object.has("building")?another_json_object.getString("building"):""
+                        ,another_json_object.has("description")?another_json_object.getString("description"):""));
+            }
+            return projects;
+        } catch (IOException e) {
+            System.out.println("loi io");
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            System.out.println("loi json");
+            throw new RuntimeException(e);
+        } finally {
+            if(response!=null) {
+                response.close();
+            }
         }
-        return projectList;
+
     }
 
     public static List<record> getIdAndType (){
@@ -193,7 +204,7 @@ public class Connectivity {
             for (int i = 0; i < size; i++) {
                 JSONObject another_json_object = the_json_array.getJSONObject(i);
                 nameList.add(new record(another_json_object.getString("_id"),"",
-                        0f,"",another_json_object.getString("type"),""));
+                        0f,"",another_json_object.has("type")?another_json_object.getString("type"):"",""));
             }
             return nameList;
         } catch (IOException e) {
@@ -209,4 +220,121 @@ public class Connectivity {
         }
     }
 
+    public static List<record> getImageOfProject (String projectid){
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType,
+                "{\n" +
+                        "    \"collection\":\"fault_detection\",\n" +
+                        "    \"database\":\"thesis\",\n" +
+                        "    \"dataSource\":\"Cluster0\",\n" +
+                        "    \"projection\": {\n" +
+                        "      \"date\": 1,\n" +
+                        "      \"segment_image\":1\n" +
+                        "    },\n" +
+                        "    \"filter\" : {\"building\": \""+projectid+"\"}\n" +
+                        "}");
+
+        Request request = new Request.Builder()
+                .url("https://ap-southeast-1.aws.data.mongodb-api.com/app/data-wlatu/endpoint/data/v1/action/find")
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Access-Control-Request-Headers", "*")
+                .addHeader("api-key", "LFyT8MWcEraGxtCsMJpceBO8q72WLX8mInon25j6kbVCgv2j5vSwVYzNVzdxFsqh")
+                .build();
+        Response response=null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            String responsebody =response.body().string();
+            JSONObject myjson = new JSONObject(responsebody);
+            JSONArray the_json_array = myjson.getJSONArray("documents");
+            int size = the_json_array.length();
+            ArrayList<record> nameList = new ArrayList<record>();
+            for (int i = 0; i < size; i++) {
+                JSONObject another_json_object = the_json_array.getJSONObject(i);
+                nameList.add(new record(another_json_object.getString("_id"),
+                        another_json_object.has("date")?another_json_object.getString("date"):"",
+                        0f,"","",
+                        another_json_object.has("segment_image")?another_json_object.getString("segment_image"):""));
+            }
+            return nameList;
+        } catch (IOException e) {
+            System.out.println("loi io");
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            System.out.println("loi json");
+            throw new RuntimeException(e);
+        } finally {
+            if(response!=null) {
+                response.close();
+            }
+        }
+    }
+
+    public static record getImagedetail (String date){
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType,
+                "{\n" +
+                        "    \"collection\":\"fault_detection\",\n" +
+                        "    \"database\":\"thesis\",\n" +
+                        "    \"dataSource\":\"Cluster0\",\n" +
+                        "    \"filter\" : {\"date\": \""+date+"\"}\n" +
+                        "}");
+
+        Request request = new Request.Builder()
+                .url("https://ap-southeast-1.aws.data.mongodb-api.com/app/data-wlatu/endpoint/data/v1/action/findOne")
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Access-Control-Request-Headers", "*")
+                .addHeader("api-key", "LFyT8MWcEraGxtCsMJpceBO8q72WLX8mInon25j6kbVCgv2j5vSwVYzNVzdxFsqh")
+                .build();
+        Response response=null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            String responsebody =response.body().string();
+            JSONObject myjson = new JSONObject(responsebody);
+            JSONObject another_json_object = myjson.getJSONObject("document");
+//            JSONArray the_json_array = myjson.getJSONArray("documents");
+//            int size = the_json_array.length();
+//            ArrayList<record> nameList = new ArrayList<record>();
+//            for (int i = 0; i < size; i++) {
+//                JSONObject another_json_object = the_json_array.getJSONObject(i);
+                //nameList.add(
+                   return     new record(another_json_object.getString("_id"),
+                        another_json_object.has("date")?another_json_object.getString("date"):"",
+                        another_json_object.has("prediction")? Float.parseFloat(another_json_object.getString("prediction")) :0f,
+                        another_json_object.has("original_image")?another_json_object.getString("original_image"):"",
+                        another_json_object.has("type")?another_json_object.getString("type"):"",
+                        another_json_object.has("segment_image")?another_json_object.getString("segment_image"):"");
+            //}
+            //return nameList;
+        } catch (IOException e) {
+            System.out.println("loi io");
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            System.out.println("loi json");
+            throw new RuntimeException(e);
+        } finally {
+            if(response!=null) {
+                response.close();
+            }
+        }
+    }
+
+    public static String control(String x) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(x)
+                .build();
+        try  {
+            Response response = client.newCall(request).execute();
+            return response.body().string();
+
+        } catch (IOException error) {
+            return null;
+        }
+    }
 }

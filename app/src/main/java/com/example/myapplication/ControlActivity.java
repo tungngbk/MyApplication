@@ -11,6 +11,7 @@ package com.example.myapplication;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -25,6 +26,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -49,6 +51,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import model.ImageName;
+import model.record;
 
 
 public class ControlActivity extends AppCompatActivity implements View.OnClickListener {
@@ -58,6 +61,8 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     private Button mLeftBtn;
     private Button mRightBtn;
     private Button mStopBtn;
+
+    private TextView projectNameView;
 
     protected static String UP = "up";
     protected static String DOWN = "down";
@@ -71,19 +76,28 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     // Insert your Video URL
     String VideoURL = "http://192.168.1.184:81/stream";
 
+    String projectId="";
+
     Handler handler = new Handler();
     //private StringBuilder image=new StringBuilder();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.control_activity);
-
-        webView = (WebView) findViewById(R.id.webview);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setUseWideViewPort(true);
-        String newUA= "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0";
-        webView.getSettings().setUserAgentString(newUA);
-        webView.loadUrl(VideoURL);
+        Intent intent = getIntent();
+        String projectName = intent.getStringExtra("projectname");
+        projectId = intent.getStringExtra("projectid");
+        if(projectName==null){
+            System.out.println("ten bị null");
+        }else {
+            System.out.println(projectName);
+        }
+//        webView = (WebView) findViewById(R.id.webview);
+//        webView.getSettings().setLoadWithOverviewMode(true);
+//        webView.getSettings().setUseWideViewPort(true);
+//        String newUA= "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0";
+//        webView.getSettings().setUserAgentString(newUA);
+//        webView.loadUrl(VideoURL);
 
         takePhoto = (Button) findViewById(R.id.takePhoto);
         takePhoto.setOnClickListener(this);
@@ -105,6 +119,9 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
 
         imageView = (ImageView) findViewById(R.id.imageView);
 
+        projectNameView = (TextView) findViewById(R.id.textView2);
+        projectNameView.setText(projectName);
+
 
 
         //handler.postDelayed(status_data,0);
@@ -119,14 +136,19 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
                 new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/capture");
                 break;
             case R.id.upBtn:
+                new controlTask().execute("http://192.168.1.184/go");
                 break;
             case R.id.downBtn:
+                new controlTask().execute("http://192.168.1.184/back");
                 break;
             case R.id.leftBtn:
+                new controlTask().execute("http://192.168.1.184/left");
                 break;
             case R.id.rightBtn:
+                new controlTask().execute("http://192.168.1.184/right");
                 break;
             case R.id.stopBtn:
+                new controlTask().execute("http://192.168.1.184/stop");
                 break;
         }
     }
@@ -163,7 +185,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
                 String encodedImage = Base64.encodeToString(byteImage_photo, Base64.DEFAULT);
                 String newencodedImage = encodedImage.replace("\n","");
                 String resultImage = Connectivity.postimage(
-                        "https://fault-anomaly-detection-api-k6hgw7qjeq-ue.a.run.app/predict", newencodedImage);
+                        "https://fault-anomaly-detection-api-k6hgw7qjeq-ue.a.run.app/predict", newencodedImage, projectId);
                 //String resultImage = Connectivity.postimage("http://192.168.1.12:8000/test", newencodedImage);
                 byte[] bytes = Base64.decode(resultImage, Base64.DEFAULT);
                 bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -192,7 +214,19 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
+    private class controlTask extends AsyncTask<String, Void, Void> {
 
+        protected Void doInBackground(String... x) {
+
+
+            Connectivity.control(x[0]);
+
+            return null;
+        }
+        protected void onPostExecute() {
+
+        }
+    }
 
 
 }

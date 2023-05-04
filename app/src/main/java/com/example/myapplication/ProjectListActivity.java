@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -30,13 +31,18 @@ public class ProjectListActivity extends AppCompatActivity implements SelectList
     @Override
     public void onItemClicked(Project project) {
         Toast.makeText(this, project.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(ProjectListActivity.this, ImageListActivity.class);
+        intent.putExtra("projectId",project.getId());
+        intent.putExtra("projectName",project.getName());
+        intent.putExtra("projectDescription",project.getDescription());
+        startActivity(intent);
     }
 
     private class DownloadProjectsTask extends AsyncTask<Void, Void, List<Project>> {
 
         protected List<Project> doInBackground(Void... voids) {
 
-            List<Project> resultProject = null;
+            List<Project> resultProject = new ArrayList<>();
             try {
                 resultProject = Connectivity.getProjects();
                 // call function here
@@ -46,7 +52,6 @@ public class ProjectListActivity extends AppCompatActivity implements SelectList
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-            //resultImage.add(new ImageName("dhdhdh"));
             return resultProject;
         }
         protected void onPostExecute(List<Project> result) {

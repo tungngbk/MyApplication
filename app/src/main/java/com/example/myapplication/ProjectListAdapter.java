@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import android.view.LayoutInflater;
@@ -21,12 +22,15 @@ public class ProjectListAdapter extends
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mTextName;
+
+        private TextView mTextDes;
         public CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mTextName = itemView.findViewById(R.id.text_name);
             cardView = itemView.findViewById(R.id.imageCardView);
+            mTextDes = itemView.findViewById(R.id.text_des);
         }
     }
     private Context mContext;
@@ -42,7 +46,7 @@ public class ProjectListAdapter extends
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View heroView = inflater.inflate(R.layout.item_hero, parent, false);
+        View heroView = inflater.inflate(R.layout.projectinfo, parent, false);
         ViewHolder viewHolder = new ViewHolder(heroView);
         return viewHolder;
     }
@@ -51,6 +55,7 @@ public class ProjectListAdapter extends
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Project project = mProject.get(position);
         holder.mTextName.setText(project.getName());
+        holder.mTextDes.setText(project.getDescription());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

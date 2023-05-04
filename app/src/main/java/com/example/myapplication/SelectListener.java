@@ -1,7 +1,7 @@
 package com.example.myapplication;
 
-import model.ImageName;
+import model.record;
 
 public interface SelectListener {
-    void onItemClicked(ImageName imageName);
+    void onItemClicked(record imageName);
 }

@@ -7,7 +7,7 @@
     app:cardCornerRadius="8dp"
     android:layout_margin="8dp"
     android:id="@+id/imageCardView">
-    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,12 +23,14 @@
             android:gravity="center_horizontal"
             android:layout_weight="1"/>
 
-        <ImageView
-            android:id="@+id/image_hero"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:scaleType="center" />
+        <TextView
+            android:id="@+id/text_des"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="#00cba9"
+            android:textSize="20sp" />
 
     </LinearLayout>
 
