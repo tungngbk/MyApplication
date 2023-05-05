@@ -30,7 +30,6 @@ public class ProjectListActivity extends AppCompatActivity implements SelectList
 
     @Override
     public void onItemClicked(Project project) {
-        Toast.makeText(this, project.getName(), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(ProjectListActivity.this, ImageListActivity.class);
         intent.putExtra("projectId",project.getId());
         intent.putExtra("projectName",project.getName());

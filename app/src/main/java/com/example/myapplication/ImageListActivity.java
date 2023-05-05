@@ -55,7 +55,6 @@ public class ImageListActivity extends AppCompatActivity implements SelectListen
 
     @Override
     public void onItemClicked(record image) {
-        Toast.makeText(this, image.getDate(), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(ImageListActivity.this, ImageDetail.class);
         intent.putExtra("date",image.getDate());
         intent.putExtra("projectname",projectName);
