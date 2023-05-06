@@ -34,7 +34,7 @@ public class Connectivity {
 
 
     }
-    public static String postimage (String url,String base64string, String buildingid) {
+    public static record postimage (String url,String base64string, String buildingid) {
 
 //       OkHttpClient client = new OkHttpClient();
 //
@@ -66,7 +66,13 @@ public class Connectivity {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
             String responsebody = response.body().string();
             JSONObject jObject = new JSONObject(responsebody);
-            return jObject.getString("image");
+            record record =  new record("","",
+                    jObject.has("prediction")?"".equals(jObject.getString("prediction"))?0f:Float.parseFloat(jObject.getString("prediction")):0f,
+                    jObject.has("anomaly")?jObject.getString("anomaly"):"",
+                    jObject.has("type")?jObject.getString("type"):"",
+                    jObject.has("image")?jObject.getString("image"):"");
+
+            return record;
         } catch (IOException e) {
             System.out.println("loi io");
             throw new RuntimeException(e);

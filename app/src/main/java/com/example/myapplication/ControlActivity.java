@@ -92,12 +92,12 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         }else {
             System.out.println(projectName);
         }
-//        webView = (WebView) findViewById(R.id.webview);
-//        webView.getSettings().setLoadWithOverviewMode(true);
-//        webView.getSettings().setUseWideViewPort(true);
-//        String newUA= "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0";
-//        webView.getSettings().setUserAgentString(newUA);
-//        webView.loadUrl(VideoURL);
+        webView = (WebView) findViewById(R.id.webview);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+        String newUA= "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0";
+        webView.getSettings().setUserAgentString(newUA);
+        webView.loadUrl(VideoURL);
 
         takePhoto = (Button) findViewById(R.id.takePhoto);
         takePhoto.setOnClickListener(this);
@@ -184,11 +184,16 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
 
                 String encodedImage = Base64.encodeToString(byteImage_photo, Base64.DEFAULT);
                 String newencodedImage = encodedImage.replace("\n","");
-                String resultImage = Connectivity.postimage(
+                record resultImage = Connectivity.postimage(
                         "https://fault-anomaly-detection-api-k6hgw7qjeq-ue.a.run.app/predict", newencodedImage, projectId);
                 //String resultImage = Connectivity.postimage("http://192.168.1.12:8000/test", newencodedImage);
-                byte[] bytes = Base64.decode(resultImage, Base64.DEFAULT);
-                bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                if("1".equals(resultImage.getOriginal_image())){
+                    byte[] bytes = Base64.decode(resultImage.getSegment_image(), Base64.DEFAULT);
+                    bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                }else if("0".equals(resultImage.getOriginal_image())){
+                    bitmap = mIcon11;
+                }
+
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
