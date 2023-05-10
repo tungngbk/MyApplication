@@ -31,6 +31,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 //import org.apache.commons.io.IOUtils;
 
@@ -38,6 +39,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import static com.example.myapplication.activity_1.ip_address;
 
+
+import com.google.android.material.slider.Slider;
 
 import org.json.JSONException;
 
@@ -54,13 +57,14 @@ import model.ImageName;
 import model.record;
 
 
-public class ControlActivity extends AppCompatActivity implements View.OnClickListener {
+public class ControlActivity extends AppCompatActivity implements View.OnClickListener, Slider.OnChangeListener {
     private Button takePhoto;
     private Button mUpBtn;
     private Button mDownBtn;
     private Button mLeftBtn;
     private Button mRightBtn;
     private Button mStopBtn;
+    private Slider mSlider;
 
     private TextView projectNameView;
 
@@ -119,6 +123,9 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
 
         imageView = (ImageView) findViewById(R.id.imageView);
 
+        mSlider = (Slider) findViewById(R.id.lightSlider);
+        mSlider.addOnChangeListener(this);
+
         projectNameView = (TextView) findViewById(R.id.textView2);
         projectNameView.setText(projectName);
 
@@ -158,6 +165,14 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         super.onDestroy();
     }
 
+    @Override
+    public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+        switch (slider.getId()){
+            case R.id.lightSlider:
+                System.out.println(value);
+                break;
+        }
+    }
 
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
