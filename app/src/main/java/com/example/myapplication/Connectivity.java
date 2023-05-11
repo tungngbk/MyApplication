@@ -7,10 +7,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import model.ImageName;
 import model.Project;
 import model.record;
+import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -47,7 +49,12 @@ public class Connectivity {
 //                .url(url)
 //                .post(formBody)
 //                .build();
-        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType,
                 "{\n" +
@@ -308,13 +315,13 @@ public class Connectivity {
 //            ArrayList<record> nameList = new ArrayList<record>();
 //            for (int i = 0; i < size; i++) {
 //                JSONObject another_json_object = the_json_array.getJSONObject(i);
-                //nameList.add(
-                   return     new record(another_json_object.getString("_id"),
-                        another_json_object.has("date")?another_json_object.getString("date"):"",
-                        another_json_object.has("prediction")? Float.parseFloat(another_json_object.getString("prediction")) :0f,
-                        another_json_object.has("original_image")?another_json_object.getString("original_image"):"",
-                        another_json_object.has("type")?another_json_object.getString("type"):"",
-                        another_json_object.has("segment_image")?another_json_object.getString("segment_image"):"");
+            //nameList.add(
+            return     new record(another_json_object.getString("_id"),
+                    another_json_object.has("date")?another_json_object.getString("date"):"",
+                    another_json_object.has("prediction")? Float.parseFloat(another_json_object.getString("prediction")) :0f,
+                    another_json_object.has("original_image")?another_json_object.getString("original_image"):"",
+                    another_json_object.has("type")?another_json_object.getString("type"):"",
+                    another_json_object.has("segment_image")?another_json_object.getString("segment_image"):"");
             //}
             //return nameList;
         } catch (IOException e) {

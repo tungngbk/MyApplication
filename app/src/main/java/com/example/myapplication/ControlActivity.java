@@ -8,14 +8,9 @@ package com.example.myapplication;
 //gmail : nurahmaddw@gmail.com
 
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,44 +22,26 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 //import org.apache.commons.io.IOUtils;
 
 
-
-import static com.example.myapplication.activity_1.ip_address;
-
-
-import com.google.android.material.slider.Slider;
-
-import org.json.JSONException;
-
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 
-import model.ImageName;
+import model.ResultPredict;
 import model.record;
 
 
-public class ControlActivity extends AppCompatActivity implements View.OnClickListener, Slider.OnChangeListener {
+public class ControlActivity extends AppCompatActivity implements View.OnClickListener {
     private Button takePhoto;
     private Button mUpBtn;
     private Button mDownBtn;
     private Button mLeftBtn;
     private Button mRightBtn;
     private Button mStopBtn;
-    private Slider mSlider;
 
     private TextView projectNameView;
 
@@ -76,6 +53,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
 
     ImageView imageView;
     WebView webView;
+    TextView textView;
 
     // Insert your Video URL
     String VideoURL = "http://192.168.1.184:81/stream";
@@ -96,6 +74,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         }else {
             System.out.println(projectName);
         }
+        textView = (TextView) findViewById(R.id.textView7);
         webView = (WebView) findViewById(R.id.webview);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
@@ -123,9 +102,6 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
 
         imageView = (ImageView) findViewById(R.id.imageView);
 
-        mSlider = (Slider) findViewById(R.id.lightSlider);
-        mSlider.addOnChangeListener(this);
-
         projectNameView = (TextView) findViewById(R.id.textView2);
         projectNameView.setText(projectName);
 
@@ -140,22 +116,24 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.takePhoto:
+                textView.setText("");
                 new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/capture");
                 break;
             case R.id.upBtn:
-                new controlTask().execute("http://192.168.1.184/go");
+
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/left");
                 break;
             case R.id.downBtn:
-                new controlTask().execute("http://192.168.1.184/back");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/right");
                 break;
             case R.id.leftBtn:
-                new controlTask().execute("http://192.168.1.184/left");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/back");
                 break;
             case R.id.rightBtn:
-                new controlTask().execute("http://192.168.1.184/right");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/go");
                 break;
             case R.id.stopBtn:
-                new controlTask().execute("http://192.168.1.184/stop");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/stop");
                 break;
         }
     }
@@ -165,14 +143,6 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         super.onDestroy();
     }
 
-    @Override
-    public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-        switch (slider.getId()){
-            case R.id.lightSlider:
-                System.out.println(value);
-                break;
-        }
-    }
 
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -185,16 +155,79 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
-            Bitmap bitmap = null;
+//            Bitmap bitmap = null;
             try {
                 InputStream in = new java.net.URL(urldisplay).openStream();
                 mIcon11 = BitmapFactory.decodeStream(in);
+                System.out.println("this");
+                //bmImage.setImageBitmap(mIcon11);
+//                BitmapFactory.Options options = new BitmapFactory.Options();
+//                options.inSampleSize = 4;
+//                options.inPurgeable = true;
+//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                mIcon11.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+//                byte[] byteImage_photo = baos.toByteArray();
+//
+//                String encodedImage = Base64.encodeToString(byteImage_photo, Base64.DEFAULT);
+//                String newencodedImage = encodedImage.replace("\n","");
+//                record resultImage = Connectivity.postimage(
+//                        "https://fault-anomaly-detection-api-k6hgw7qjeq-ue.a.run.app/predict", newencodedImage, projectId);
+//                //String resultImage = Connectivity.postimage("http://192.168.1.12:8000/test", newencodedImage);
+//                if("1".equals(resultImage.getOriginal_image())){
+//                    byte[] bytes = Base64.decode(resultImage.getSegment_image(), Base64.DEFAULT);
+//                    bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                }else if("0".equals(resultImage.getOriginal_image())){
+//                    bitmap = mIcon11;
+//                }
 
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+
+            //String resultImage;
+
+            //resultImage = Connectivity.postimage("http://192.168.1.12:8000/test", "\"image\": \"alsdjk\"");
+            //resultImage=Connectivity.getImageNames();
+            //resultImage=Connectivity.geturl("https://fault-anomaly-detection-api-k6hgw7qjeq-ue.a.run.app/haha");
+            //System.out.println(resultImage);
+//            for (ImageName image:
+//                 resultImage) {
+            //           System.out.println(image.getName());
+//            }
+            //return null;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            if(result!=null){
+                bmImage.setImageBitmap(result);
+            }
+            new getSegmentImage((ImageView) findViewById(R.id.imageView)).execute(result);
+        }
+    }
+
+    private class getSegmentImage extends AsyncTask<Bitmap, Void, ResultPredict> {
+        ImageView bmImage;
+
+        public getSegmentImage(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected ResultPredict doInBackground(Bitmap... bitmaps) {
+//            String urldisplay = urls[0];
+//            Bitmap mIcon11 = null;
+            Bitmap bitmap = null;
+            record record = null;
+            try {
+//                InputStream in = new java.net.URL(urldisplay).openStream();
+//                mIcon11 = BitmapFactory.decodeStream(in);
+                //bmImage.setImageBitmap(mIcon11);
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 4;
                 options.inPurgeable = true;
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                mIcon11.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+                bitmaps[0].compress(Bitmap.CompressFormat.JPEG, 40, baos);
                 byte[] byteImage_photo = baos.toByteArray();
 
                 String encodedImage = Base64.encodeToString(byteImage_photo, Base64.DEFAULT);
@@ -202,34 +235,36 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
                 record resultImage = Connectivity.postimage(
                         "https://fault-anomaly-detection-api-k6hgw7qjeq-ue.a.run.app/predict", newencodedImage, projectId);
                 //String resultImage = Connectivity.postimage("http://192.168.1.12:8000/test", newencodedImage);
-                if("1".equals(resultImage.getOriginal_image())){
+                record=new record("","",resultImage.getPrediction(),"",resultImage.getType(),"");
+                if("1".equals(resultImage.getOriginal_image())&&"Crack".equals(resultImage.getType())){
                     byte[] bytes = Base64.decode(resultImage.getSegment_image(), Base64.DEFAULT);
                     bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                }else if("0".equals(resultImage.getOriginal_image())){
-                    bitmap = mIcon11;
+                    System.out.println("segment");
+                }else{
+                    System.out.println("normal image");
+                    bitmap = bitmaps[0];
                 }
 
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
-            return bitmap;
-
-            //String resultImage;
-
-                //resultImage = Connectivity.postimage("http://192.168.1.12:8000/test", "\"image\": \"alsdjk\"");
-                //resultImage=Connectivity.getImageNames();
-                //resultImage=Connectivity.geturl("https://fault-anomaly-detection-api-k6hgw7qjeq-ue.a.run.app/haha");
-            //System.out.println(resultImage);
-//            for (ImageName image:
-//                 resultImage) {
-   //           System.out.println(image.getName());
-//            }
-            //return null;
+            return new ResultPredict(bitmap,record);
         }
 
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
+        protected void onPostExecute(ResultPredict result) {
+            System.out.println("yy");
+            if(result!=null){
+                bmImage.setImageBitmap(result.getBitmap());
+                if(result.getRecord()!=null){
+                    if("Crack".equals(result.getRecord().getType())||"Normal".equals(result.getRecord().getType())){
+                        textView.setText("Prediction Result: "+result.getRecord().getType() + "  Percentage: " + result.getRecord().getPrediction()*100+"%");
+                    }else{
+                        textView.setText("Prediction Result: "+result.getRecord().getType());
+                    }
+
+                }
+            }
         }
     }
 
@@ -237,18 +272,12 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     private class controlTask extends AsyncTask<String, Void, Void> {
 
         protected Void doInBackground(String... x) {
-
-
             Connectivity.control(x[0]);
-
             return null;
-        }
-        protected void onPostExecute() {
-
         }
     }
 
 
+
+
 }
-
-

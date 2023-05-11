@@ -61,7 +61,7 @@ public class ImageDetail extends AppCompatActivity {
             return record;
         }
         protected void onPostExecute(record result) {
-            predicttext.setText(result.getType() + ": " + result.getPrediction());
+            predicttext.setText("Prediction Result: "+result.getType() + "  Percentage: " + result.getPrediction()*100+"%");
             byte[] bytes = Base64.decode(result.getOriginal_image(), Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             originalimage.setImageBitmap(bitmap);

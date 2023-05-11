@@ -12,6 +12,8 @@ public class MainActivity extends AppCompatActivity {
     private Button createProjectBtn;
     private Button openProjectBtn;
 
+    private Button openChartBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +33,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ProjectListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        openChartBtn = (Button) findViewById(R.id.chart);
+        openChartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, chart_activity.class);
                 startActivity(intent);
             }
         });
