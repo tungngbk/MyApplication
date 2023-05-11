@@ -18,7 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import model.ImageName;
 import model.record;
@@ -41,6 +45,8 @@ public class ImageNameAdapter extends
     private Context mContext;
     private ArrayList<record> mImagenames;
     private SelectListener listener;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    SimpleDateFormat dateFormat2 = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 
     public ImageNameAdapter(Context mContext, ArrayList<record> mImagenames, SelectListener listener) {
         this.mContext = mContext;
@@ -59,7 +65,15 @@ public class ImageNameAdapter extends
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         record hero = mImagenames.get(position);
-        holder.mTextName.setText(hero.getDate());
+        String date = hero.getDate();
+        try {
+            Date date1 = dateFormat.parse(date);
+            holder.mTextName.setText(dateFormat2.format(date1));
+        } catch (ParseException e) {
+            holder.mTextName.setText(date);
+            throw new RuntimeException(e);
+        }
+
         byte[] bytes = Base64.decode(hero.getSegment_image(), Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         Glide.with(mContext)

@@ -12,7 +12,10 @@ import android.util.Base64;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import model.record;
@@ -23,6 +26,8 @@ public class ImageDetail extends AppCompatActivity {
     private TextView predicttext;
     private ImageView originalimage;
     private ImageView segmengtimage;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    SimpleDateFormat dateFormat2 = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +41,14 @@ public class ImageDetail extends AppCompatActivity {
         String projectName = intent.getStringExtra("projectname");
         projectnametext.setText(projectName);
         String date = intent.getStringExtra("date");
-        capturedatetext.setText(date);
+        try {
+            Date date1 = dateFormat.parse(date);
+            capturedatetext.setText(dateFormat2.format(date1));
+        } catch (ParseException e) {
+            capturedatetext.setText(date);
+            throw new RuntimeException(e);
+        }
+
         new DownloadImagedetailTask().execute(date);
     }
 
