@@ -2,10 +2,16 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -17,9 +23,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
+import model.Project;
+import model.record;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MultipartBody;
@@ -35,6 +46,8 @@ public class CreateProjectActivity extends AppCompatActivity {
     private EditText inputDate;
     private Button btnCreate;
     final Calendar mCalendar = Calendar.getInstance();
+    String projectName="";
+    String projectId="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,43 +67,14 @@ public class CreateProjectActivity extends AppCompatActivity {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RequestBody formBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("name", inputName.getText().toString())
-                        .addFormDataPart("description", inputDescription.getText().toString())
-                        .build();
+                if("".equals(inputName.getText().toString())||"".equals(inputDescription.getText().toString())){
+                    Toast.makeText(CreateProjectActivity.this,"Please fill the fields", Toast.LENGTH_SHORT).show();
+                }else{
+                    projectName=inputName.getText().toString();
+                    new DownloadProjectsTask().execute();
 
-                Request request = new Request.Builder()
-                        .url(url)
-                        .post(formBody)
-                        .build();
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        e.printStackTrace();
-                    }
 
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            final String myResponse = response.body().string();
-                            System.out.println(myResponse);
-                            try {
-                                JSONObject jObject = new JSONObject(myResponse);
-                                String projectId=jObject.getString("id");
-                                String projectName=jObject.getString("building");
-                                Intent intent = new Intent(CreateProjectActivity.this, ControlActivity.class);
-                                intent.putExtra("projectname",projectName);
-                                intent.putExtra("projectid",projectId);
-                                startActivity(intent);
-                            } catch (JSONException e) {
-                                System.out.println("Loi json tao project");
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });
-
+                }
             }
         });
     }
@@ -119,5 +103,64 @@ public class CreateProjectActivity extends AppCompatActivity {
         String format = "yyyy-MM-dd";
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         return dateFormat.format(mCalendar.getTime());
+    }
+
+    private class insertnewproject extends AsyncTask<String, Void, Boolean> {
+
+        protected Boolean doInBackground(String... x) {
+
+            try {
+                return Connectivity.insertNewProject(x[0],x[1],x[2]);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return false;
+        }
+        protected void onPostExecute(Boolean result) {
+            if(result==true){
+                Toast.makeText(CreateProjectActivity.this,"Create new project successfully", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(CreateProjectActivity.this, ControlActivity.class);
+                intent.putExtra("projectname",projectName);
+                intent.putExtra("projectid",projectId);
+                startActivity(intent);
+            }else{
+                Toast.makeText(CreateProjectActivity.this,"Create new project failed", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class DownloadProjectsTask extends AsyncTask<Void, Void, List<Project>> {
+
+        protected List<Project> doInBackground(Void... voids) {
+
+            List<Project> resultProject = new ArrayList<>();
+            try {
+                resultProject = Connectivity.getProjects();
+                // call function here
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            return resultProject;
+        }
+        protected void onPostExecute(List<Project> result) {
+            int max=0;
+            for (Project p:
+                 result) {
+                try{
+                if(Integer.parseInt(p.getId())>max){
+                        max=Integer.parseInt(p.getId());
+                }
+                }catch (Exception e){
+
+                }
+            }
+            System.out.println("abc");
+            projectId= String.valueOf(max+1);
+            new insertnewproject().execute(projectId,projectName,inputDescription.getText().toString());
+        }
     }
 }

@@ -74,7 +74,7 @@ public class chart_activity extends AppCompatActivity {
                     .format("{%Value}{groupsSeparator: }");
 
             cartesian.animation(true);
-            cartesian.title("Lỗi bề mặt");
+            cartesian.title("Statistics of predicted results");
 
             cartesian.yScale().minimum(0d);
 
@@ -83,8 +83,8 @@ public class chart_activity extends AppCompatActivity {
             cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
             cartesian.interactivity().hoverMode(HoverMode.BY_X);
 
-            cartesian.xAxis(0).title("Loại lỗi");
-            cartesian.yAxis(0).title("Tần suất");
+            cartesian.xAxis(0).title("Predicted results");
+            cartesian.yAxis(0).title("Times");
 
             anyChartView.setChart(cartesian);
         }

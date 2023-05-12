@@ -235,7 +235,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
                 record resultImage = Connectivity.postimage(
                         "https://fault-anomaly-detection-api-k6hgw7qjeq-ue.a.run.app/predict", newencodedImage, projectId);
                 //String resultImage = Connectivity.postimage("http://192.168.1.12:8000/test", newencodedImage);
-                record=new record("","",resultImage.getPrediction(),"",resultImage.getType(),"");
+                record=new record("","",resultImage.getPrediction(),resultImage.getOriginal_image(),resultImage.getType(),"");
                 if("1".equals(resultImage.getOriginal_image())&&"Crack".equals(resultImage.getType())){
                     byte[] bytes = Base64.decode(resultImage.getSegment_image(), Base64.DEFAULT);
                     bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -253,14 +253,18 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         protected void onPostExecute(ResultPredict result) {
-            System.out.println("yy");
             if(result!=null){
                 bmImage.setImageBitmap(result.getBitmap());
                 if(result.getRecord()!=null){
-                    if("Crack".equals(result.getRecord().getType())||"Normal".equals(result.getRecord().getType())){
-                        textView.setText("Prediction Result: "+result.getRecord().getType() + "  Percentage: " + result.getRecord().getPrediction()*100+"%");
+                    if("1".equals(result.getRecord().getOriginal_image())){
+                        textView.setText("Prediction Result: "+result.getRecord().getType() + "  Fault rate: " + result.getRecord().getPrediction()*100+"%");
                     }else{
-                        textView.setText("Prediction Result: "+result.getRecord().getType());
+                        textView.setText("Prediction Result: Normal");
+                    }
+                    if("Crack".equals(result.getRecord().getType())||"Normal".equals(result.getRecord().getType())){
+
+                    }else{
+
                     }
 
                 }

@@ -18,6 +18,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okio.Buffer;
 
 public class Connectivity {
     public static String geturl (String url_esp32){
@@ -132,6 +133,55 @@ public class Connectivity {
         return nameList;
     }
 
+    public static Boolean insertNewProject (String id, String building, String des) {
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType,
+                "{\n" +
+                        "  \"dataSource\":\"Cluster0\",\n" +
+                        "  \"database\":\"thesis\",\n" +
+                        "  \"collection\":\"building\",\n" +
+                        "  \"document\":\n" +
+                        "  {\n" +
+                        "      \"building\":\"ABC House\",\n" +
+                        "      \"description\":\"Nguyen Van Dau Street\",\n" +
+                        "      \"id\":\"10\"\n" +
+                        "  }\n" +
+                        "}");
+
+
+        try {
+            final Buffer buffer = new Buffer();
+            body.writeTo(buffer);
+            System.out.println(buffer.readUtf8());
+        }
+        catch (final IOException e) {
+            System.out.println("not work");
+        }
+        Request request = new Request.Builder()
+                .url("https://ap-southeast-1.aws.data.mongodb-api.com/app/data-wlatu/endpoint/data/v1/action/insertOne")
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Access-Control-Request-Headers", "*")
+                .addHeader("api-key", "LFyT8MWcEraGxtCsMJpceBO8q72WLX8mInon25j6kbVCgv2j5vSwVYzNVzdxFsqh")
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            String responsebody =response.body().string();
+            JSONObject jObject = new JSONObject(responsebody);
+            //if(jObject!=null&&jObject.has("insertedId")){
+                return true;
+            //}
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }catch (JSONException e){
+            throw new RuntimeException(e);
+        }
+
+        //return false;
+    }
+
     public static ArrayList<Project> getProjects () throws IOException, JSONException {
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         MediaType mediaType = MediaType.parse("application/json");
@@ -171,10 +221,10 @@ public class Connectivity {
             }
             return projects;
         } catch (IOException e) {
-            System.out.println("loi io");
+            System.out.println("loi io getproject");
             throw new RuntimeException(e);
         } catch (Exception e) {
-            System.out.println("loi json");
+            System.out.println("loi json get project");
             throw new RuntimeException(e);
         } finally {
             if(response!=null) {
