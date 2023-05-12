@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -136,18 +137,18 @@ public class Connectivity {
     public static Boolean insertNewProject (String id, String building, String des) {
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         MediaType mediaType = MediaType.parse("application/json");
-        RequestBody body = RequestBody.create(mediaType,
-                "{\n" +
-                        "  \"dataSource\":\"Cluster0\",\n" +
-                        "  \"database\":\"thesis\",\n" +
-                        "  \"collection\":\"building\",\n" +
-                        "  \"document\":\n" +
-                        "  {\n" +
-                        "      \"building\":\"ABC House\",\n" +
-                        "      \"description\":\"Nguyen Van Dau Street\",\n" +
-                        "      \"id\":\"10\"\n" +
-                        "  }\n" +
-                        "}");
+        String json = "{\n" +
+                "  \"dataSource\":\"Cluster0\",\n" +
+                "  \"database\":\"thesis\",\n" +
+                "  \"collection\":\"building\",\n" +
+                "  \"document\":\n" +
+                "  {\n" +
+                "      \"building\":\"XXXXC House\",\n" +
+                "      \"description\":\"Tung nui Street\",\n" +
+                "      \"id\":\"10\"\n" +
+                "  }\n" +
+                "}";
+        RequestBody body = RequestBody.create(json.getBytes(StandardCharsets.UTF_8));
 
 
         try {
@@ -168,14 +169,8 @@ public class Connectivity {
         try {
             Response response = client.newCall(request).execute();
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-            String responsebody =response.body().string();
-            JSONObject jObject = new JSONObject(responsebody);
-            //if(jObject!=null&&jObject.has("insertedId")){
-                return true;
-            //}
+            return true;
         }catch (IOException e){
-            throw new RuntimeException(e);
-        }catch (JSONException e){
             throw new RuntimeException(e);
         }
 
