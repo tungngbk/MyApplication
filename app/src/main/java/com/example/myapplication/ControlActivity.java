@@ -56,7 +56,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     TextView textView;
 
     // Insert your Video URL
-    String VideoURL = "http://192.168.1.184:81/stream";
+    String VideoURL = "http://192.168.32.184:81/stream";
 
     String projectId="";
 
@@ -117,23 +117,23 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         switch (view.getId()){
             case R.id.takePhoto:
                 textView.setText("");
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/capture");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/capture");
                 break;
             case R.id.upBtn:
 
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/left");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/left");
                 break;
             case R.id.downBtn:
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/right");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/right");
                 break;
             case R.id.leftBtn:
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/back");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/back");
                 break;
             case R.id.rightBtn:
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/go");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/go");
                 break;
             case R.id.stopBtn:
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.1.184/stop");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/stop");
                 break;
         }
     }

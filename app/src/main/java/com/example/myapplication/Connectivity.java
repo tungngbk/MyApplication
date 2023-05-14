@@ -136,7 +136,7 @@ public class Connectivity {
 
     public static Boolean insertNewProject (String id, String building, String des) {
         OkHttpClient client = new OkHttpClient().newBuilder().build();
-        MediaType mediaType = MediaType.parse("application/json");
+        //MediaType mediaType = MediaType.parse("application/json");
         String json = "{\n" +
                 "  \"dataSource\":\"Cluster0\",\n" +
                 "  \"database\":\"thesis\",\n" +
