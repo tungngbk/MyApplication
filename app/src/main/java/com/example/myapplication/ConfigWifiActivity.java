@@ -53,7 +53,7 @@ public class ConfigWifiActivity extends AppCompatActivity {
                         editor.putString("ip", a);
                         editor.apply();
                         /* Lay gia tri
-                        * String a = sharedPreferences.getString()
+                        * String a = sharedPreferences.getString("ip");
                         * */
                     }
 
