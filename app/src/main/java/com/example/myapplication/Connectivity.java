@@ -68,13 +68,10 @@ public class Connectivity {
                     jObject.has("anomaly")?jObject.getString("anomaly"):"",
                     jObject.has("type")?jObject.getString("type"):"",
                     jObject.has("image")?jObject.getString("image"):"");
-
             return record;
         } catch (IOException e) {
-            System.out.println("loi io");
             throw new RuntimeException(e);
         } catch (JSONException e) {
-            System.out.println("loi json");
             throw new RuntimeException(e);
         } finally {
             if(response!=null){
@@ -108,7 +105,6 @@ public class Connectivity {
         if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
         String responsebody =response.body().string();
-        //JSONObject jObject = new JSONObject(responsebody);
         JSONObject myjson = new JSONObject(responsebody);
         JSONArray the_json_array = myjson.getJSONArray("documents");
         int size = the_json_array.length();
@@ -116,7 +112,6 @@ public class Connectivity {
         ArrayList<ImageName> nameList = new ArrayList<ImageName>();
         for (int i = 0; i < size; i++) {
             JSONObject another_json_object = the_json_array.getJSONObject(i);
-            //arrays.add(another_json_object);
             nameList.add(new ImageName(another_json_object.getString("_id")));
         }
         return nameList;
@@ -137,7 +132,6 @@ public class Connectivity {
                 "  }\n" +
                 "}";
         RequestBody body = RequestBody.create(json.getBytes(StandardCharsets.UTF_8));
-
 
         try {
             final Buffer buffer = new Buffer();
@@ -161,8 +155,64 @@ public class Connectivity {
         }catch (IOException e){
             throw new RuntimeException(e);
         }
+    }
 
-        //return false;
+    public static Boolean deleteProject (String id) {
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        String json = "{\n" +
+                "  \"dataSource\":\"Cluster0\",\n" +
+                "  \"database\":\"thesis\",\n" +
+                "  \"collection\":\"building\",\n" +
+                "  \"filter\":\n" +
+                "  {\n" +
+                "      \"id\":\""+id+"\"\n" +
+                "  }\n" +
+                "}";
+        RequestBody body = RequestBody.create(json.getBytes(StandardCharsets.UTF_8));
+
+        Request request = new Request.Builder()
+                .url("https://ap-southeast-1.aws.data.mongodb-api.com/app/data-wlatu/endpoint/data/v1/action/deleteOne")
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Access-Control-Request-Headers", "*")
+                .addHeader("api-key", "LFyT8MWcEraGxtCsMJpceBO8q72WLX8mInon25j6kbVCgv2j5vSwVYzNVzdxFsqh")
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            return true;
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Boolean deleteImage (String date) {
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        String json = "{\n" +
+                "  \"dataSource\":\"Cluster0\",\n" +
+                "  \"database\":\"thesis\",\n" +
+                "  \"collection\":\"fault_detection\",\n" +
+                "  \"filter\":\n" +
+                "  {\n" +
+                "      \"date\":\""+date+"\"\n" +
+                "  }\n" +
+                "}";
+        RequestBody body = RequestBody.create(json.getBytes(StandardCharsets.UTF_8));
+
+        Request request = new Request.Builder()
+                .url("https://ap-southeast-1.aws.data.mongodb-api.com/app/data-wlatu/endpoint/data/v1/action/deleteOne")
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Access-Control-Request-Headers", "*")
+                .addHeader("api-key", "LFyT8MWcEraGxtCsMJpceBO8q72WLX8mInon25j6kbVCgv2j5vSwVYzNVzdxFsqh")
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            return true;
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
     }
 
     public static ArrayList<Project> getProjects () throws IOException, JSONException {
@@ -204,10 +254,8 @@ public class Connectivity {
             }
             return projects;
         } catch (IOException e) {
-            System.out.println("loi io getproject");
             throw new RuntimeException(e);
         } catch (Exception e) {
-            System.out.println("loi json get project");
             throw new RuntimeException(e);
         } finally {
             if(response!=null) {
@@ -254,10 +302,8 @@ public class Connectivity {
             }
             return nameList;
         } catch (IOException e) {
-            System.out.println("loi io");
             throw new RuntimeException(e);
         } catch (Exception e) {
-            System.out.println("loi json");
             throw new RuntimeException(e);
         } finally {
             if(response!=null) {
@@ -306,10 +352,8 @@ public class Connectivity {
             }
             return nameList;
         } catch (IOException e) {
-            System.out.println("loi io");
             throw new RuntimeException(e);
         } catch (Exception e) {
-            System.out.println("loi json");
             throw new RuntimeException(e);
         } finally {
             if(response!=null) {
@@ -343,25 +387,15 @@ public class Connectivity {
             String responsebody =response.body().string();
             JSONObject myjson = new JSONObject(responsebody);
             JSONObject another_json_object = myjson.getJSONObject("document");
-//            JSONArray the_json_array = myjson.getJSONArray("documents");
-//            int size = the_json_array.length();
-//            ArrayList<record> nameList = new ArrayList<record>();
-//            for (int i = 0; i < size; i++) {
-//                JSONObject another_json_object = the_json_array.getJSONObject(i);
-            //nameList.add(
             return     new record(another_json_object.getString("_id"),
                     another_json_object.has("date")?another_json_object.getString("date"):"",
                     another_json_object.has("prediction")? Float.parseFloat(another_json_object.getString("prediction")) :0f,
                     another_json_object.has("original_image")?another_json_object.getString("original_image"):"",
                     another_json_object.has("type")?another_json_object.getString("type"):"",
                     another_json_object.has("segment_image")?another_json_object.getString("segment_image"):"");
-            //}
-            //return nameList;
         } catch (IOException e) {
-            System.out.println("loi io");
             throw new RuntimeException(e);
         } catch (Exception e) {
-            System.out.println("loi json");
             throw new RuntimeException(e);
         } finally {
             if(response!=null) {
