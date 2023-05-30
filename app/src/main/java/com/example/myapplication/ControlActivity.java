@@ -9,6 +9,7 @@ package com.example.myapplication;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -57,7 +58,8 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
 
     // Insert your Video URL
     String VideoURL = "http://192.168.32.184:81/stream";
-
+    String ip="";
+    private SharedPreferences sharedPreferences;
     String projectId="";
 
     Handler handler = new Handler();
@@ -74,13 +76,19 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         }else {
             System.out.println(projectName);
         }
+        sharedPreferences = getSharedPreferences("mySharedPreferences", MODE_PRIVATE);
+        ip=sharedPreferences.getString("ip","");
+        if(ip.equals("")){
+            Intent intent2 = new Intent(ControlActivity.this, ConfigWifiActivity.class);
+            startActivity(intent2);
+        }
         textView = (TextView) findViewById(R.id.textView7);
         webView = (WebView) findViewById(R.id.webview);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
         String newUA= "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0";
         webView.getSettings().setUserAgentString(newUA);
-        webView.loadUrl(VideoURL);
+        webView.loadUrl("http://"+ip+":81/stream");
 
         takePhoto = (Button) findViewById(R.id.takePhoto);
         takePhoto.setOnClickListener(this);
@@ -117,23 +125,23 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         switch (view.getId()){
             case R.id.takePhoto:
                 textView.setText("");
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/capture");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://"+ip+"/capture");
                 break;
             case R.id.upBtn:
 
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/left");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://"+ip+"/left");
                 break;
             case R.id.downBtn:
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/right");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://"+ip+"/right");
                 break;
             case R.id.leftBtn:
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/back");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://"+ip+"/back");
                 break;
             case R.id.rightBtn:
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/go");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://"+ip+"/go");
                 break;
             case R.id.stopBtn:
-                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://192.168.32.184/stop");
+                new DownloadImageTask((ImageView) findViewById(R.id.imageView)).execute("http://"+ip+"/stop");
                 break;
         }
     }

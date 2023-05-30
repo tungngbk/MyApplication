@@ -39,13 +39,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StreamActivity"
-            android:exported="true">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".ImageListActivity"
             android:exported="true">
             <intent-filter>
@@ -60,7 +53,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".chart_activity"
+            android:name=".Chart_activity"
             android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -70,14 +63,6 @@
             android:name=".ControlActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity_1"
-            android:exported="true"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

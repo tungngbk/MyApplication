@@ -44,8 +44,6 @@ public class ProjectListActivity extends AppCompatActivity implements SelectList
             List<Project> resultProject = new ArrayList<>();
             try {
                 resultProject = Connectivity.getProjects();
-                // call function here
-                System.out.println("abc");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (JSONException e) {

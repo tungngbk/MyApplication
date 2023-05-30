@@ -25,7 +25,7 @@ import java.util.Set;
 
 import model.record;
 
-public class chart_activity extends AppCompatActivity {
+public class Chart_activity extends AppCompatActivity {
     Cartesian cartesian;
     AnyChartView anyChartView;
     @Override

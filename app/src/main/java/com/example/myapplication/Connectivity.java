@@ -39,18 +39,6 @@ public class Connectivity {
 
     }
     public static record postimage (String url,String base64string, String buildingid) {
-
-//       OkHttpClient client = new OkHttpClient();
-//
-//        RequestBody formBody = new MultipartBody.Builder()
-//                .setType(MultipartBody.FORM)
-//                .addFormDataPart("image", base64string)
-//                .build();
-//
-//        Request request = new Request.Builder()
-//                .url(url)
-//                .post(formBody)
-//                .build();
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
@@ -143,9 +131,9 @@ public class Connectivity {
                 "  \"collection\":\"building\",\n" +
                 "  \"document\":\n" +
                 "  {\n" +
-                "      \"building\":\"XXXXC House\",\n" +
-                "      \"description\":\"Tung nui Street\",\n" +
-                "      \"id\":\"10\"\n" +
+                "      \"building\":\""+building+"\",\n" +
+                "      \"description\":\""+des+"\",\n" +
+                "      \"id\":\""+id+"\"\n" +
                 "  }\n" +
                 "}";
         RequestBody body = RequestBody.create(json.getBytes(StandardCharsets.UTF_8));
